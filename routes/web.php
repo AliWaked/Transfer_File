@@ -14,8 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view('/', 'welcome')->name('home');
-Route::view('/download', 'download')->name('download');
+Route::get('/', [UploadFilesController::class, 'index'])->name('home');
+// Route::view('/download', 'download')->name('download');
 Route::get('/files/{file:identifier}', [UploadFilesController::class, 'show'])->name('file.show');
-Route::get('/download/{file:identifier}', [UploadFilesController::class, 'download'])->name('file.download');
+Route::get('/download/file', [UploadFilesController::class, 'downloadSingleFile'])->name('file.download');
+Route::get('/download/{file:identifier}', [UploadFilesController::class, 'download'])->name('download');
 Route::post('/uploads', [UploadFilesController::class, 'store'])->name('file.upload');

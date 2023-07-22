@@ -252,4 +252,203 @@ button button.active:hover {
     display: none;
 }
 
+.download {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 25px;
+    row-gap: 7px;
+}
+
+.download i {
+    color: #6666;
+    border: 8px solid;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 60px;
+}
+
+.download h3 {
+    font-size: 22px;
+}
+
+.download span {
+    font-size: 14px;
+    color: #6666;
+}
+
+.download p {
+    background-color: transparent;
+    color: #666;
+}
+
+.download-information {
+    padding: 10px 30px;
+    transition: 0.3s;
+}
+.download-information:hover {
+    background-color: #ddd;
+}
+
+.download-information>div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.download-information .number-of-file {
+    color: #333;
+    font-weight: 500;
+}
+
+.download-information .preview {
+    color: #5268ff;
+    text-decoration: none;
+    transition: 0.3s;
+}
+.download-information .preview:hover {
+    color: #253eed;
+}
+.download-information small {
+    font-size: 11px;
+    color: #666;
+}
+
+.information {
+    padding: 5px 15px;
+    border-bottom: #666 solid 1px;
+    width: calc(100% - 30px);
+    margin: 0 auto;
+    position: relative;
+}
+
+.information span {
+    font-size: 12px;
+    color: #666;
+}
+
+.information .name {
+    font-size: 14px;
+    color: #444;
+    display: block;
+    text-wrap: nowrap;
+}
+
+.information i {
+    position: absolute;
+    left: 250px;
+    top: 18px;
+    color: #5268ff;
+    cursor: pointer;
+}
+
+.information i:hover {
+    color: #253eed;
+}
+
+.add-files-folders {
+    color: #5268ff;
+    position: relative;
+    padding: 8px 0px 0px 26px;
+}
+
+.add-files-folders label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.add-files-folders label i {
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #5268ff;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    margin-right: 5px;
+}
+
+.add-files-folders:hover label {
+    color: #253eed;
+}
+
+.add-files-folders:hover label i {
+    background-color: #253eed;
+}
+
+.choose-type {
+    color: #333;
+    position: absolute;
+    /* padding: 13px 20px; */
+    left: 10px;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: -1px 5px 8px #66666640;
+    overflow: hidden;
+    top: 4%;
+    z-index: 20;
+}
+
+.choose-type ul {
+    list-style: none;
+}
+
+.choose-type ul li label {
+    cursor: pointer;
+    color: #333333;
+    transition: 0.3s;
+    font-weight: 400;
+    opacity: 1;
+    font-size: 16px;
+    display: inline-block;
+    width: 100%;
+    padding: 10px 25px;
+}
+
+.choose-type ul li label:hover {
+    color: #fff;
+    background-color: #253eed;
+}
+
+.download-link {
+    color: #fff;
+    background: #333;
+    width: 300px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    text-align: center;
+    border-radius: 12px;
+    width: 350px;
+    height: 150px;
+    word-wrap: break-word;
+    font-size: 16px;
+    padding: 40px 20px;
+}
+
+.download-link button {
+    background: transparent;
+    color: #5268ff;
+    border: none;
+    margin-top: 20px;
+    font-size: 20px;
+    text-transform: capitalize;
+    cursor: pointer;
+    transition: 0.3s;
+    padding-bottom: 5px;
+}
+
+.download-link button:hover {
+    color: #253eed;
+    letter-spacing: 2px;
+    border-bottom: 2px solid #253eed;
+}
 /* #5268ff rgb(82, 104, 255) #484a4d #babcbf #babcbf rgb(82, 104, 255) */

@@ -11,170 +11,134 @@
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     @vite('resources/css/app.css')
-    {{-- <style>
-        .information {
-            padding: 5px 15px;
-            border-bottom: #666 solid 1px;
-            width: calc(100% - 30px);
-            margin: 0 auto;
-            position: relative;
+    <style>
+        .sidebar {
+            background-color: #eeeeee;
+            position: absolute;
+            z-index: 10000;
+            right: 0;
+            width: 55%;
+            height: 100vh;
+            transition: 0.5s;
+            box-shadow: -1px 0px 23px #22222224;
         }
 
-        .information span {
-            font-size: 12px;
+        .sidebar .close {
+            padding: 20px 15px;
+            border-bottom: 2px solid #80808033;
+            background: #fff;
+        }
+
+        .sidebar .close i {
+            color: #6666669c;
+            font-size: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sidebar .close i:hover {
             color: #666;
         }
 
-        .information .name {
-            font-size: 14px;
-            color: #444;
-            display: block;
-            text-wrap: nowrap;
+        .sidebar .header-container {
+            padding: 20px 15px;
+            display: flex;
+            background: #fff;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #80808033;
         }
 
-        .information i {
-            position: absolute;
-            left: 250px;
-            top: 18px;
-            color: #5268ff;
-            cursor: pointer;
+        .sidebar .header-container .title h2 {
+            font-size: 30px;
+            margin-bottom: 5px;
         }
 
-        .information i:hover {
-            color: #253eed;
-        }
-
-        .add-files-folders {
-            color: #5268ff;
-            position: relative;
-            padding: 8px 0px 0px 26px;
-        }
-
-        .add-files-folders label {
-            font-size: 14px;
+        .sidebar .header-container .title p {
+            background: #fff;
+            padding: 0;
             font-weight: 500;
         }
 
-        .add-files-folders label i {
+        .sidebar .header-container button {
+            background: #5268ff;
             color: #fff;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: #5268ff;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 10px;
-            margin-right: 5px;
-        }
-
-        .add-files-folders:hover label {
-            color: #253eed;
-        }
-
-        .add-files-folders:hover label i {
-            background-color: #253eed;
-        }
-
-        .choose-type {
-            color: #333;
-            position: absolute;
-            /* padding: 13px 20px; */
-            left: 10px;
-            border-radius: 5px;
-            background-color: #fff;
-            box-shadow: -1px 5px 8px #66666640;
-            overflow: hidden;
-            top: 4%;
-            z-index: 20;
-        }
-
-        .choose-type ul {
-            list-style: none;
-        }
-
-        .choose-type ul li label {
+            font-size: 18px;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
             cursor: pointer;
-            color: #333333;
+            font-weight: 500;
             transition: 0.3s;
-            font-weight: 400;
-            opacity: 1;
-            font-size: 16px;
-            display: inline-block;
-            width: 100%;
-            padding: 10px 25px;
         }
 
-        .choose-type ul li label:hover {
-            color: #fff;
+        .sidebar .header-container button:hover {
             background-color: #253eed;
         }
-    </style> --}}
-    <style>
-        .download {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 25px;
-            row-gap: 7px;
+
+        .sidebar .files {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(250px, 1fr));
+            /* column-gap: 10px;
+            row-gap: 10px; */
+            gap: 10px;
+            padding: 30px;
         }
 
-        .download i {
-            color: #6666;
-            border: 8px solid;
-            border-radius: 50%;
-            width: 120px;
-            height: 120px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 60px;
+        .sidebar .files .file {
+            background: #fff;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 2px 3px 4px #22222224;
         }
 
-        .download h3 {
-            font-size: 22px;
-        }
-
-        .download span {
-            font-size: 14px;
-            color: #6666;
-        }
-
-        .download p {
-            background-color: transparent;
-            color: #666;
-        }
-
-        .download-information {
-            padding: 10px 30px;
-            transition: 0.3s;
-        }
-        .download-information:hover {
-            background-color: #ddd;
-        }
-
-        .download-information>div {
+        .sidebar .files .file>div {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .download-information .number-of-file {
-            color: #333;
+        .sidebar .files .file>div p {
+            background: #fff;
+            font-size: 16px;
+            padding: 0;
             font-weight: 500;
+            color: #222;
+            word-wrap: break-word;
+            max-width: 85%;
         }
 
-        .download-information .preview {
+        .sidebar .files .file>div a {
             color: #5268ff;
+            border: 2px solid;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             text-decoration: none;
+            border-radius: 50%;
+            position: relative;
+            top: 8px;
             transition: 0.3s;
         }
-        .download-information .preview:hover {
+
+        .sidebar .files .file>div a:hover {
             color: #253eed;
         }
-        .download-information small {
-            font-size: 11px;
+
+        .sidebar .files .file>div a i {
+            font-size: 14px;
+        }
+
+        .sidebar .file .size {
+            font-size: 14px;
             color: #666;
+        }
+
+        .hidden-sidebar {
+            overflow: hidden;
+            width: 0;
         }
     </style>
 </head>
@@ -182,189 +146,56 @@
 <body>
     <div class="content">
 
-        <form action="{{ route('file.download',$file->identifier) }}" method="get" >
+        <form action="{{ route('download', $file->identifier) }}" method="get" id="file-download">
             <div class="download" id="header">
                 <i class="fa-solid fa-arrow-down"></i>
                 <h3>Ready when you are</h3>
                 <span>Transfer expires in 7 days</span>
-                <p class="title">{{$file->title}}   </p>
-                {{-- <div id="file-container">
-                </div>
-                <div class="add-files-folders hidden" id="add-files-folders">
-                    <label for=""><i class="fa-solid fa-plus"></i> Add more files</label>
-                    <div class="choose-type hidden" id="choose-type">
-                        <ul>
-                            <li><label for="file">Files</label></li>
-                            <li><label for="folder">Folders</label></li>
-                        </ul>
-                    </div>
-                </div> --}}
+                <p class="title">{{ $file->title }} </p>
+
             </div>
             <hr>
-            {{-- <p>Up to 2 GB free <a href="">Increase Limit <i class="fa-solid fa-circle-up"></i></a></p> --}}
             <div class="visible" id='link-content'>
-                {{-- <x-partials.container /> --}}
                 <div class="download-information">
                     <div>
-                        <div class="number-of-file">{{count($file->path)}} file</div>
-                        <a href="" class="preview">Preview</a>
+                        <div class="number-of-file">{{ count($file->path) }} file</div>
+                        <a class="preview" style="cursor: pointer;"
+                            onclick="document.getElementById('sidebar').classList.toggle('hidden-sidebar')">Preview</a>
                     </div>
-                    <small class="size">22MB</small>
+                    <small class="size">{{ $file->total_size }}MB</small>
                 </div>
             </div>
-            {{-- <div class="hidden" id="email-content">
-                <x-partials.input type='email' name='email_to' label='Email to' />
-                <x-partials.input type='email' name='your_email' label='Your email' />
-                <x-partials.input name='title_email' label='Title' />
-                <x-partials.textarea name='message_email' label='Message' />
-            </div> --}}
             <hr>
-            {{-- <div class="radio-container" id="radio-container">
-                <div class="radio">
-                    <div><input type="radio" id="email" value="email" name="type">
-                        <label for="email">Send email transfer</label>
-                    </div>
-                    <div>
-                        <input type="radio" id="link" value="link" name="type" checked>
-                        <label for="link">Get transfer link</label>
-                    </div>
-                </div>
-            </div> --}}
             <div class="button" style="width: fit-content; margin-left:auto;margin-right:auto;">
-                {{-- <span id="change-type-send"><i class="fa-solid fa-ellipsis"></i></span> --}}
                 <button type="submit" class="active" style="margin-left: 0px;">Download</button>
             </div>
         </form>
+
     </div>
-
-    {{-- <script>
-        window.addEventListener('load', function() {
-            inputs = document.querySelectorAll('.form-control input');
-            inputs.forEach(e => {
-                e.onchange = function() {
-                    if (e.value != '') {
-                        e.classList.add('focuse')
-                    } else e.classList.remove('focuse');
-                }
-            });
-            textarea = document.querySelectorAll('.form-control textarea');
-            textarea.forEach(e => {
-                e.onchange = function() {
-                    if (e.value != '') {
-                        e.classList.add('focuse')
-                    } else e.classList.remove('focuse');
-                }
-            });
-            document.getElementById('change-type-send').onclick = function() {
-                document.getElementById('radio-container').classList.toggle('desable')
-            }
-            document.getElementById('email').onclick = function() {
-                document.getElementById('link-content').classList.add('hidden')
-                document.getElementById('link-content').classList.remove('visible')
-                document.getElementById('email-content').classList.remove('hidden')
-                document.getElementById('email-content').classList.add('visible')
-                document.getElementById('radio-container').classList.remove('desable')
-
-            }
-            document.getElementById('link').onclick = function() {
-                document.getElementById('link-content').classList.remove('hidden')
-                document.getElementById('link-content').classList.add('visible')
-                document.getElementById('email-content').classList.add('hidden')
-                document.getElementById('email-content').classList.remove('visible')
-                document.getElementById('radio-container').classList.remove('desable')
-            }
-            file = document.getElementById('file');
-            file.onchange = function() {
-                path = this.value;
-                parts = path.split('\\');
-                filename = parts[parts.length - 1];
-                inputTitle = ($input = document.querySelector('.visible input[name="title"]')) == null ?
-                    document.querySelector('.visible input[name="title_email"]') : $input;
-                if (inputTitle.value == '') {
-                    inputTitle.value = filename;
-                    inputTitle.classList.add('focuse');
-                    document.querySelector('button[type="submit"]').classList.add('active');
-                    document.querySelector('button[type="submit"]').classList.remove('desable');
-                    removeContent();
-                }
-                value = this.files;
-                displayFileInformation(filename, Math.round((this.files[0].size / 1048576) * 100) / 100, value);
-                // const clonedFile = new File([value], value.name, {
-                //     type: value.type
-                // });
-
-                // Set the cloned file to the destination input
-                // $ifle = document.getElementById(`${$number}`)
-                // $ifle.files = new DataTransfer().files;
-                // $ifle.files = this.files;
-                // $ifle.nextElementSibling.textContent = this.files.name;
-                // document.getElementById(`${$number}`).files = this.files;
-                // $number++;
-                // input = document.getElementById(`0`)
-                // console.log(input);
-                // console.log(filename);
-            }
-            folder = document.getElementById('folder');
-            folder.onchange = function() {
-                path = folder.files[0].webkitRelativePath;
-                parts = path.split('/');
-                filename = parts[0];
-                inputTitle = document.querySelector('.visible input[name="title"]');
-                if (inputTitle.value == '') {
-                    inputTitle.value = filename;
-                    inputTitle.classList.add('focuse');
-                    document.querySelector('button[type="submit"]').classList.add('active');
-                    document.querySelector('button[type="submit"]').classList.remove('desable');
-                    removeContent();
-                }
-                console.log(filename);
-            }
-        });
-        var $number = 0;
-
-        function removeContent() {
-            document.getElementById('uploads-icon').style.display = 'none';
-            document.getElementById('uploads').style.display = 'none';
-            document.getElementById('header').style.display = 'block';
-            document.getElementById('header').style.padding = '0px 0px 10px 0px';
-            document.getElementById('add-files-folders').classList.remove('hidden');
-        }
-        document.getElementById('add-files-folders').onclick = function() {
-            document.getElementById('choose-type').classList.toggle('hidden');
-        }
-        var values = [];
-
-        function displayFileInformation(fileName, size, value) {
-            parts = fileName.split('.');
-            extension = parts[parts.length - 1];
-            document.getElementById('file-container').innerHTML += ` <div class="information">
-                        <input type='file' value='${value}' name='file[]' id='${$number}' hidden />
-                        <span class="name">${fileName}</span>
-                        <span>${size} KB - ${extension}</span>
-                        <i class="fa-solid fa-xmark"></i>
-                    </div>`;
-            // document.getElementById(`${$number}`).files = value;
-            values[$number] = value;
-            setValueToInputFile();
-            // r = document.getElementById(`${$number}`).value = value;
-            closes = document.getElementsByClassName('fa-xmark');
-            for (let i = 0; i < closes.length; i++) {
-                closes[i].onclick = function() {
-                    this.parentNode.remove();
-                }
-            }
-            $number++;
-        }
-
-        function setValueToInputFile() {
-            files = document.querySelectorAll('#file-container input[type="file"]');
-            // console.log(files[0]);
-            for (let i = 0; i < files.length; i++) {
-                files[i].files = values[i];
-                // console.log(files[0]);
-            }
-        }
-    </script> --}}
+    <div class="sidebar hidden-sidebar" id="sidebar">
+        <div class="close" onclick="this.parentNode.classList.toggle('hidden-sidebar')">
+            <i class="fa-regular fa-circle-xmark"></i>
+        </div>
+        <div class="header-container">
+            <div class="title">
+                <h2>Items in this transfer</h2>
+                <p>{{ count($file->path) }} files {{ $file->total_size }} MB - transfer expires in 7 days</p>
+            </div>
+            <button type="submit" onclick="document.getElementById('file-download').submit()">Download</button>
+        </div>
+        <div class="files">
+            @foreach ($file->path as $path)
+                <div class="file">
+                    <div>
+                        <p>{{ Str::after($path, '*') }}</p>
+                        <a href="{{ route('file.download', ['path' => $path]) }}"><i
+                                class="fa-solid fa-arrow-down"></i></a>
+                    </div>
+                    <div class="size">{{ $file->getFileSize($path) }} MB</div>
+                </div>
+            @endforeach
+        </div>
+    </div>
 </body>
 
 </html>

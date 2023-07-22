@@ -11,110 +11,19 @@
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     @vite('resources/css/app.css')
-    <style>
-        .information {
-            padding: 5px 15px;
-            border-bottom: #666 solid 1px;
-            width: calc(100% - 30px);
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .information span {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .information .name {
-            font-size: 14px;
-            color: #444;
-            display: block;
-            text-wrap: nowrap;
-        }
-
-        .information i {
-            position: absolute;
-            left: 250px;
-            top: 18px;
-            color: #5268ff;
-            cursor: pointer;
-        }
-
-        .information i:hover {
-            color: #253eed;
-        }
-
-        .add-files-folders {
-            color: #5268ff;
-            position: relative;
-            padding: 8px 0px 0px 26px;
-        }
-
-        .add-files-folders label {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .add-files-folders label i {
-            color: #fff;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: #5268ff;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 10px;
-            margin-right: 5px;
-        }
-
-        .add-files-folders:hover label {
-            color: #253eed;
-        }
-
-        .add-files-folders:hover label i {
-            background-color: #253eed;
-        }
-
-        .choose-type {
-            color: #333;
-            position: absolute;
-            /* padding: 13px 20px; */
-            left: 10px;
-            border-radius: 5px;
-            background-color: #fff;
-            box-shadow: -1px 5px 8px #66666640;
-            overflow: hidden;
-            top: 4%;
-            z-index: 20;
-        }
-
-        .choose-type ul {
-            list-style: none;
-        }
-
-        .choose-type ul li label {
-            cursor: pointer;
-            color: #333333;
-            transition: 0.3s;
-            font-weight: 400;
-            opacity: 1;
-            font-size: 16px;
-            display: inline-block;
-            width: 100%;
-            padding: 10px 25px;
-        }
-
-        .choose-type ul li label:hover {
-            color: #fff;
-            background-color: #253eed;
-        }
-    </style>
 </head>
 
 <body>
+    @if (session()->has('link'))
+        <div class="download-link">
+            <div id="download-link">
+                {{ Session::get('link') }}
+                {{-- ?? 'http://localhost/files/69AoaGbBLDVOfIDv6rPXoalobcrhzZy7ohoIrHUK1689998909' --}}
+            </div>
+            <button type="button" id="link-copy">copy</button>
+        </div>
+    @endif
     <div class="content">
-
         <form action="{{ route('file.upload') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="header" id="header">
@@ -261,6 +170,16 @@
             document.getElementById('header').style.padding = '0px 0px 10px 0px';
             document.getElementById('add-files-folders').classList.remove('hidden');
         }
+        // dispaly content
+        function displayContent() {
+            if (document.getElementById('file-container').children.length == 0) {
+                document.getElementById('uploads-icon').style.display = 'flex';
+                document.getElementById('uploads').style.display = 'block';
+                document.getElementById('header').style.display = 'flex';
+                document.getElementById('header').style.padding = '50px 30px';
+                document.getElementById('add-files-folders').classList.add('hidden');
+            }
+        }
         document.getElementById('add-files-folders').onclick = function() {
             document.getElementById('choose-type').classList.toggle('hidden');
         }
@@ -272,7 +191,7 @@
             document.getElementById('file-container').innerHTML += ` <div class="information">
                         <input type='file' value='${value}' name='file[]' id='${$number}' hidden />
                         <span class="name">${fileName}</span>
-                        <span>${size} KB - ${extension}</span>
+                        <span>${size} MB - ${extension}</span>
                         <i class="fa-solid fa-xmark"></i>
                     </div>`;
             // document.getElementById(`${$number}`).files = value;
@@ -283,6 +202,7 @@
             for (let i = 0; i < closes.length; i++) {
                 closes[i].onclick = function() {
                     this.parentNode.remove();
+                    displayContent();
                 }
             }
             $number++;
@@ -296,6 +216,18 @@
                 // console.log(files[0]);
             }
         }
+
+
+        document.getElementById('link-copy').addEventListener('click', function() {
+            var link = document.getElementById('download-link');
+            const range = document.createRange();
+            range.selectNode(link);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            const successful = document.execCommand('copy');
+
+        });
     </script>
 </body>
 
