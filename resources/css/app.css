@@ -1,0 +1,255 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    outline: none;
+}
+
+::selection {
+    background: #5268ff;
+    color: #fff;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    /* border-radius: 6px; */
+}
+
+body {
+    background-image: url("/assets/image/img.12b9249cf90fd027b2f6.jpg");
+    background-size: 100vw 100vh;
+}
+
+.content {
+    background-color: #fff;
+    width: 305px;
+    /* width: fit-content; */
+    position: absolute;
+    top: 56px;
+    left: 150px;
+    border-radius: 10px;
+    max-height: 484px;
+    overflow-y: auto;
+}
+
+.header {
+    display: flex;
+    padding: 50px 30px;
+    align-items: center;
+}
+
+.header .title label {
+    display: block;
+}
+
+.icon {
+    font-weight: bold;
+    color: #fff;
+    background-color: #5268ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* padding: 7px; */
+    border-radius: 50%;
+    font-size: 20px;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    margin-right: 20px;
+    transition: 0.3s;
+}
+
+label {
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.title label[for='file'] {
+    font-weight: 400;
+    font-size: 25px;
+    opacity: 0.7;
+}
+
+.title label[for='folder'] {
+    font-size: 13px;
+    margin-top: 5px;
+    border-bottom: 1px solid #484a4d;
+    color: #484a4d;
+    padding-bottom: 4px;
+    width: fit-content;
+}
+
+.header:hover .icon {
+    background-color: #253eed;
+}
+
+.header:hover label[for='file'] {
+    opacity: 1;
+}
+
+.header .title label[for='folder']:hover {
+    color: #5268ff;
+    border-bottom-color: #5268ff;
+}
+
+p {
+    background: #babcbf;
+    color: #484a4d;
+    padding: 5px 30px;
+    font-size: 14px;
+}
+
+p a {
+    text-decoration: none;
+    color: #5268ff;
+    margin: 0 5px;
+    transition: 0.3s;
+}
+
+p a:hover {
+    color: #253eed;
+}
+
+.form-control {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    padding: 0 15px;
+    position: relative;
+}
+
+.form-control input {
+    border: none;
+    border-bottom: #babcbf 1px solid;
+    /* padding-left: 15px; */
+    padding: 15px 0 15px 15px;
+    font-size: 13px;
+    color: #253eed;
+}
+
+.form-control textarea {
+    border: none;
+    padding-left: 15px;
+    font-size: 13px;
+    min-height: 12px;
+    height: 71px;
+    padding-top: 15px;
+    resize: none;
+    color: #253eed;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    padding: 20px 30px;
+}
+
+.button button {
+    color: #fff;
+    padding: 8px 35px;
+    border: none;
+    border-radius: 27px;
+    font-size: 17px;
+    margin-left: 20px;
+    font-weight: 500;
+}
+
+button.desable {
+    pointer-events: none;
+    user-select: none;
+    background: #babcbf;
+}
+
+button.active {
+    pointer-events: auto;
+    cursor: pointer;
+    background-color: #5268ff;
+    transition: 0.3s;
+}
+
+button button.active:hover {
+    background-color: #253eed;
+}
+
+.button span {
+    color: #5268ff;
+    border: #5268ff 2px solid;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.button span:hover {
+    color: #253eed;
+    border-color: #253eed;
+}
+.form-control label {
+    color: #484a4dc7;
+    position: absolute;
+    left: 30px;
+    top: 10px;
+    font-size: 17px;
+    cursor: auto;
+}
+
+.form-control input:focus+label,
+.form-control textarea:focus+label,
+.form-control input.focuse+label,
+.form-control textarea.focuse+label {
+    top: 0px;
+    font-size: 12px;
+}
+
+.radio {
+    background-color: #babcbf;
+    padding: 15px 30px;
+    color: #333;
+}
+
+.radio label {
+    font-weight: 500;
+}
+
+.radio>div {
+    margin-bottom: 5px;
+}
+
+.radio input {
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.radio input:checked+label {
+    color: #253eed;
+}
+
+.radio input:checked {
+    /* background: #253eed; */
+    accent-color: #253eed;
+}
+
+.radio-container {
+    height: 0;
+    transition: 0.5s;
+    overflow: hidden;
+}
+
+.radio-container.desable {
+    height: 82px;
+    /* transition: 0.5s; */
+}
+
+.hidden {
+    display: none;
+}
+
+/* #5268ff rgb(82, 104, 255) #484a4d #babcbf #babcbf rgb(82, 104, 255) */
