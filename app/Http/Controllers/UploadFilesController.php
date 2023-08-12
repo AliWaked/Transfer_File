@@ -2,67 +2,121 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FileRequest;
 use App\Models\File;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View as ViewFacade;
 use Illuminate\Support\Str;
-use League\Flysystem\Filesystem;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use ZipArchive;
+
+use function PHPSTORM_META\type;
 
 class UploadFilesController extends Controller
 {
-    public function index()
+    private readonly string $identifier;
+    public function __construct()
     {
-        return view('welcome');
+        $this->identifier = Str::random(40);
+        // $this->identifier = Str::uuid()->toString();
     }
-    public function store(Request $request)
+
+    public function index(): View
     {
-        $request->validate([
-            'title' => 'nullable|string|max:255',
-            'message' => 'nullable|string',
-            'file.*' => 'required|file',
-        ]);
-        $identifier = Str::random(40) . time();
+        return ViewFacade::make('index');
+    }
+
+    public function store(FileRequest $request): JsonResponse
+    {
+        $folders = $request->file('folder');
         $files = $request->file('file');
-        foreach ($files as $file) {
-            $fileName =  time() . '*' . $file->getClientOriginalName();
-            $path[] = $file->storeAs("/upload/$identifier", $fileName, ['disk' => 'public']);
+
+        if ($files) {
+            foreach ($files as $file) {
+                $this->storeAsClientOriginalName($file);
+            }
         }
-        File::create([
+
+        if ($folders) {
+            foreach ($folders as $folder) {
+                $this->uploadFolder($folder);
+            }
+        }
+
+        $link = URL::temporarySignedRoute('file.show', now()->addDays(7), ['file' => $this->identifier]);
+
+        $data = [
             'title' => $request->title,
             'message' => $request->message,
-            'path' => $path,
-            'identifier' => $identifier,
-        ]);
-        // Session::put('link', url("files/$identifier"));
-        // Session::remove('')
-        return to_route('home')->with('link', url("files/$identifier"));
+            'identifier' => $this->identifier,
+        ];
+
+        if ($request->type == 'email' && $user_id = Auth::id()) {
+            $data['user_id'] = $user_id;
+            $data['email_to'] = $request->email_to;
+        }
+
+        File::create($data);
+        // event();
+        return response()->json(
+            [
+                'code' => 1,
+                'message' => 'Decompression successful',
+                'link' => $link
+            ]
+        );
     }
-    public function show(File $file)
+
+    public function show(File $file): View
     {
         return view('download', ['file' => $file]);
     }
-    public function download(File $file)
+
+    public function downloadAll(File $file): BinaryFileResponse
     {
-        $files = Storage::disk('public')->files("upload/$file->identifier");
-        $zipFile = storage_path('app/' . $file->title . '.zip');
-        $zip = new ZipArchive;
-        if ($zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
-            foreach ($files as $file) {
-                $fileContent = Storage::disk('public')->get($file);
-                $zip->addFromString($file, $fileContent);
-            }
+        $zipFile = File::generateZipFile($file->identifier, $file->title);
+        return Response::download($zipFile)->deleteFileAfterSend(true);
+    }
+
+    public function download(Request $request): StreamedResponse|BinaryFileResponse
+    {
+        $path = $request->path;
+        if (Storage::disk(File::DISK)->fileExists($request->query('path'))) {
+            $path = $request->query('path');
+            return Storage::disk(File::DISK)->download($path, Str::after($path, '*'));
+        }
+        $zipFile = File::generateZipFile($path, Str::afterLast($path, '/'));
+        return Response::download($zipFile)->deleteFileAfterSend(true);
+    }
+
+    protected function uploadFolder(object $folder): void
+    {
+        $zip = new \ZipArchive();
+        $zipFilePath = $folder->getPathname();
+        $extractedFolderPath = Storage::disk(File::DISK)->path($this->identifier);
+        if (!file_exists($extractedFolderPath)) {
+            mkdir($extractedFolderPath, 0777, true);
+        }
+        if ($zip->open($zipFilePath) === true) {
+            $zip->extractTo($extractedFolderPath);
             $zip->close();
         }
-
-        return response()->download($zipFile)->deleteFileAfterSend(true);
+        // $folderName = Str::afterLast($folder->getClientOriginalName(), '.zip');
+        // return "$extractedFolderPath/{$folderName}";
     }
-    public function downloadSingleFile(Request $request)
+
+    public function storeAsClientOriginalName(object $file): void
     {
-        // dd($request->path);
-        $path = $request->query('path');
-        return Storage::disk('public')->download($path, Str::after($path, '*'));
+        $fileName = time() . '*' . $file->getClientOriginalName();
+        $file->storeAs("/{$this->identifier}", $fileName, ['disk' => File::DISK]);
     }
 }

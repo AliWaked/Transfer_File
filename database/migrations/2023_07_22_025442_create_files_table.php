@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->text('message')->nullable();
-            $table->json('path');
+            // $table->json('path');
             $table->string('identifier')->unique();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('email_to')->nullable()->unique();
             $table->timestamps();
         });
     }

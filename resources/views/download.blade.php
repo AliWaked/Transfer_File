@@ -134,6 +134,7 @@
         .sidebar .file .size {
             font-size: 14px;
             color: #666;
+            margin-top: 4px;
         }
 
         .hidden-sidebar {
@@ -158,7 +159,7 @@
             <div class="visible" id='link-content'>
                 <div class="download-information">
                     <div>
-                        <div class="number-of-file">{{ count($file->path) }} file</div>
+                        <div class="number-of-file">{{ $file->number_of_files }} file</div>
                         <a class="preview" style="cursor: pointer;"
                             onclick="document.getElementById('sidebar').classList.toggle('hidden-sidebar')">Preview</a>
                     </div>
@@ -179,19 +180,35 @@
         <div class="header-container">
             <div class="title">
                 <h2>Items in this transfer</h2>
-                <p>{{ count($file->path) }} files {{ $file->total_size }} MB - transfer expires in 7 days</p>
+                <p>{{ $file->number_of_files }} files {{ $file->total_size }} MB - transfer expires in 7 days</p>
             </div>
             <button type="submit" onclick="document.getElementById('file-download').submit()">Download</button>
         </div>
         <div class="files">
-            @foreach ($file->path as $path)
+            @foreach ($file->files as $file_path)
                 <div class="file">
                     <div>
-                        <p>{{ Str::after($path, '*') }}</p>
-                        <a href="{{ route('file.download', ['path' => $path]) }}"><i
+                        <p>{{ Str::after($file_path, '*') }}</p>
+                        <a href="{{ route('file.download', ['path' => $file_path]) }}"><i
                                 class="fa-solid fa-arrow-down"></i></a>
                     </div>
-                    <div class="size">{{ $file->getFileSize($path) }} MB</div>
+                    <div class="size">{{ $file->getFileSize($file_path) }} MB</div>
+                </div>
+            @endforeach
+            @foreach ($file->folders as $folder_path)
+                {{-- @dd($folder_path); --}}
+                <div class="file">
+                    <div>
+                        <p>{{ Str::afterLast($folder_path, '/') }}</p>
+                        <a href="{{ route('file.download', ['path' => $folder_path]) }}"><i
+                                class="fa-solid fa-arrow-down"></i></a>
+                    </div>
+                    <div class="size">
+                        <span>
+                            <i class="fa-solid fa-folder"></i> Folder -
+                            {{ $file->getNumberOfItems($folder_path) }} items
+                        </span>
+                    </div>
                 </div>
             @endforeach
         </div>
