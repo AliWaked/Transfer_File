@@ -51,5 +51,8 @@ return [
         'client_secret' => env('SLACK_CLIENT_SECRET'),
         'redirect' => env('APP_URL') . '/auth/slack/callback',
     ],
+    'ipstack' => [
+        'access_key' => env('IPSTACK_ACCESS_KEY'),
+    ],
 
 ];

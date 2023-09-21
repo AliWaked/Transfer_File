@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Events\DownloadFile;
+use App\Listeners\DownloadFile as ListenersDownloadFile;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Queue\Listener;
 use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
@@ -18,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        DownloadFile::class => [
+            ListenersDownloadFile::class,
+        ],
     ];
 
     /**
@@ -25,7 +31,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
     }
 
     /**

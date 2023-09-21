@@ -460,8 +460,17 @@ window.addEventListener('load', function() {
         if (typeOfSend == 'link') {
             console.log('hi', titleInput.value == '');
             if ((titleInput.value != '')) { // && sendData.classList.contains('desable')
+            // if(sendData.innerHTML != 'Transfer'){
+            // console.log('this not equle');
                 sendData.classList.remove('desable');
                 sendData.classList.add('active');
+            // }else {
+            //     if(isAuth) {
+            //     console.log('this user is auth');
+            //         sendData.classList.remove('desable');
+            //         sendData.classList.add('active');
+            //     }
+            // }
             } else if (titleInput.value == '') {
                 // not importent
                 sendData.classList.add('desable');
@@ -472,7 +481,7 @@ window.addEventListener('load', function() {
         console.log((titleInput.value != ''), isValidEmail(emailToInput.value), isValidEmail(emailInput
             .value));
         if ((titleInput.value != '') && isValidEmail(emailToInput.value) && isValidEmail(emailInput
-            .value)) {
+            .value) && isAuth) {
             sendData.classList.remove('desable');
             sendData.classList.add('active');
             return true;
@@ -508,15 +517,25 @@ window.addEventListener('load', function() {
         document.getElementById('link-copy').addEventListener('click', function() {
             console.log('hi');
             var link = document.getElementById('download-link');
-            const range = document.createRange();
-            range.selectNode(link);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            const successful = document.execCommand('copy');
+          copy(link);
         });
     }
-
+    allMyLinksFiles();
+    function allMyLinksFiles() {
+        [...document.querySelectorAll('li.my-file-link')].forEach(ele => {
+            ele.onclick = function () {
+                copy(ele.dataset.link);
+            }
+        })
+    }
+    function copy(link) {
+        const range = document.createRange();
+        range.selectNode(link);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        const successful = document.execCommand('copy');
+    }
 
     function isValidEmail(email) {
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

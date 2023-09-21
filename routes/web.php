@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CustomRequestPasswordController;
+use App\Http\Controllers\FilesController;
 use App\Http\Controllers\SocailiteController;
 use App\Http\Controllers\UploadFilesController;
 use Illuminate\Support\Facades\Route;
@@ -16,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/auth/{provider}/callback', [SocailiteController::class, 'callback'])->name('socialite.callback');
+Route::get('/auth/{provider}/callback', [SocailiteController::class, 'callback'])->middleware('guest')->name('socialite.callback');
 Route::controller(UploadFilesController::class)->group(function () {
     Route::get('/', 'index')->name('home');
     Route::get('/files/{file:identifier}', 'show')->middleware('signed')->name('file.show');
@@ -29,3 +31,7 @@ Route::view('/test', 'test');
 Route::get('/reset-password', [CustomRequestPasswordController::class, 'index'])->name('password.reset');
 
 Route::get('/auth/{provider}/redirect', [SocailiteController::class, 'redirect'])->name('socialite.redirect');
+
+Route::get('/filter', [FilesController::class, 'index']);
+Route::get('/my-contact', [ContactController::class, 'index']);
+Route::post('/my-contact', [ContactController::class, 'store']);

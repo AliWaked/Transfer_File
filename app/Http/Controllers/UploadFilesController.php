@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\DownloadFile;
 use App\Http\Requests\FileRequest;
 use App\Models\File;
+use App\Models\User;
+use Hamcrest\Type\IsObject;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\JsonResponse;
@@ -12,7 +15,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\View as ViewFacade;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -30,9 +32,16 @@ class UploadFilesController extends Controller
         // $this->identifier = Str::uuid()->toString();
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        return ViewFacade::make('index');
+        // dd($request->header('user-agent'),$request->ip());
+        $data = [];
+        if ($user = Auth::user()) {
+            $data['files'] = Auth::user()->files()->latest()->get()->groupBy(function (File $file) {
+                return $file->created_at->format('F Y');
+            });
+        }
+        return view('index', $data);
     }
 
     public function store(FileRequest $request): JsonResponse
@@ -52,7 +61,7 @@ class UploadFilesController extends Controller
             }
         }
 
-        $link = URL::temporarySignedRoute('file.show', now()->addDays(7), ['file' => $this->identifier]);
+        // $link = URL::temporarySignedRoute('file.show', now()->addDays(7), ['file' => $this->identifier]);
 
         $data = [
             'title' => $request->title,
@@ -65,13 +74,12 @@ class UploadFilesController extends Controller
             $data['email_to'] = $request->email_to;
         }
 
-        File::create($data);
-        // event();
+        $file = File::create($data);
         return response()->json(
             [
                 'code' => 1,
                 'message' => 'Decompression successful',
-                'link' => $link
+                'link' => $file->file_link
             ]
         );
     }
@@ -81,9 +89,14 @@ class UploadFilesController extends Controller
         return view('download', ['file' => $file]);
     }
 
-    public function downloadAll(File $file): BinaryFileResponse
+    public function downloadAll(Request $request, File $file): BinaryFileResponse
     {
         $zipFile = File::generateZipFile($file->identifier, $file->title);
+        // event(new DownloadFile($file, ['ip' => $request->ip, 'user_agent' => $request->user_agent]));
+        DownloadFile::dispatch($file, [
+            'ip' => $request->ip(),
+            'user_agent' => $request->header('user-agent'),
+        ]);
         return Response::download($zipFile)->deleteFileAfterSend(true);
     }
 
@@ -118,5 +131,15 @@ class UploadFilesController extends Controller
     {
         $fileName = time() . '*' . $file->getClientOriginalName();
         $file->storeAs("/{$this->identifier}", $fileName, ['disk' => File::DISK]);
+    }
+
+    public function filter(Request $request): JsonResponse
+    {
+        $files = Auth::user()->files()->filter($request->all())->get()->groupBy(function (File $file) {
+            $file->number_of_file = $file->getNumberOfItems($file->identifier);
+            $file->send_at = $file->created_at->diffForHumans();
+            return $file->created_at->format('F Y');
+        });
+        return Response::json($files);
     }
 }
